@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 async function request(path, options = {}) {
   const { headers: extraHeaders, body, ...rest } = options;
@@ -47,14 +47,13 @@ export async function uploadFile(file, threadId) {
   return res.json();
 }
 
-export async function streamChat({ message, threadId, model, docId }) {
+export async function streamChat({ message, threadId, model }) {
   const res = await request("/chat/stream", {
     method: "POST",
     body: JSON.stringify({
       message,
       thread_id: threadId ?? null,
-      model: model ?? "llama-3.3-70b-versatile",
-      doc_id: docId ?? null,
+      model: model ?? null,
     }),
   });
 

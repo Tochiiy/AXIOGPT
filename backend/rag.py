@@ -11,21 +11,36 @@ from pypdf import PdfReader
 import docx2txt
 
 
-embeddings = GoogleGenerativeAIEmbeddings(model="gemini-embedding-001")
+_embeddings = None
+_index = None
 
-pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-index_name = "axiogpt-docs"
 
-existing_indexes = [i.name for i in pc.list_indexes()]
-if index_name not in existing_indexes:
-    pc.create_index(
-        name=index_name,
-        dimension=768,
-        metric="cosine",
-        spec=ServerlessSpec(cloud="aws", region="us-east-1"),
-    )
+def get_embeddings():
+    global _embeddings
+    if _embeddings is None:
+        _embeddings = GoogleGenerativeAIEmbeddings(model="gemini-embedding-001")
+    return _embeddings
 
-index = pc.Index(index_name)
+
+def get_index():
+    global _index
+    if _index is not None:
+        return _index
+    api_key = os.getenv("PINECONE_API_KEY")
+    if not api_key:
+        raise RuntimeError("PINECONE_API_KEY not set. RAG features unavailable.")
+    pc = Pinecone(api_key=api_key)
+    index_name = "axiogpt-docs"
+    existing_indexes = [i.name for i in pc.list_indexes()]
+    if index_name not in existing_indexes:
+        pc.create_index(
+            name=index_name,
+            dimension=768,
+            metric="cosine",
+            spec=ServerlessSpec(cloud="aws", region="us-east-1"),
+        )
+    _index = pc.Index(index_name)
+    return _index
 
 
 SUPPORTED_EXTENSIONS = {
@@ -62,6 +77,8 @@ def add_document_to_rag(file_path: str, thread_id: str):
 
     vectors = []
     filename = Path(file_path).name
+    embeddings = get_embeddings()
+    index = get_index()
     for i, chunk in enumerate(chunks):
         vectors.append({
             "id": f"{thread_id}_{filename}_{i}",
@@ -79,6 +96,12 @@ def add_document_to_rag(file_path: str, thread_id: str):
 
 
 def retrieve_from_rag(query: str, thread_id: str = "", k: int = 4) -> str:
+    try:
+        embeddings = get_embeddings()
+        index = get_index()
+    except RuntimeError as e:
+        return str(e)
+
     filter_args = {"thread_id": {"$eq": thread_id}} if thread_id else None
     results = index.query(
         vector=embeddings.embed_query(query),

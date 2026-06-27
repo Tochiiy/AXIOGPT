@@ -1,1 +1,0 @@
-AxioGPT is an agentic AI chatbot built with LangGraph and FastAPI. It supports multiple LLM providers including Gemini, Groq, OpenRouter, and Cerebras. The RAG pipeline uses Pinecone for vector storage and Gemini embeddings for semantic search.

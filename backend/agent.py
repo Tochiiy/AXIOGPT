@@ -3,9 +3,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-from database import init_db, checkpointer
-init_db()
-
+from database import checkpointer
 from langchain_core.messages import SystemMessage
 
 from langgraph.graph import StateGraph, MessagesState, START

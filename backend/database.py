@@ -18,6 +18,7 @@ def init_db():
     global client, db, checkpointer
     uri = os.getenv("MONGO_DB_URI")
     if not uri:
+        print("WARNING: MONGO_DB_URI not set. Starting without database persistence.")
         return
     client = MongoClient(uri)
     db = client.get_database("axiogpt")
@@ -29,6 +30,8 @@ def init_db():
 
 
 def create_or_update_conversation(thread_id: str, first_message: str | None = None):
+    if db is None:
+        return
     conversation = db["conversations"].find_one({"thread_id": thread_id})
 
     if not conversation:
@@ -52,6 +55,8 @@ def create_or_update_conversation(thread_id: str, first_message: str | None = No
 
 
 def list_conversations():
+    if db is None:
+        return []
     return list(
         db["conversations"]
         .find()
@@ -60,6 +65,8 @@ def list_conversations():
 
 
 def save_chat_message(thread_id: str, role: str, content: str):
+    if db is None:
+        return
     db["chat_messages"].insert_one({
         "thread_id": thread_id,
         "role": role,
@@ -74,6 +81,8 @@ def save_chat_message(thread_id: str, role: str, content: str):
 
 
 def get_chat_history(thread_id: str):
+    if db is None:
+        return []
     return list(
         db["chat_messages"]
         .find({"thread_id": thread_id})
@@ -82,6 +91,8 @@ def get_chat_history(thread_id: str):
 
 
 def save_memory(thread_id: str, memory: str):
+    if db is None:
+        return "Memory saved (no database)."
     db["long_term_memory"].insert_one({
         "thread_id": thread_id,
         "memory": memory,
@@ -92,6 +103,8 @@ def save_memory(thread_id: str, memory: str):
 
 
 def search_memory(thread_id: str, query: str):
+    if db is None:
+        return "No saved memory found."
     memories = list(
         db["long_term_memory"]
         .find({"thread_id": thread_id})

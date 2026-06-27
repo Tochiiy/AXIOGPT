@@ -3,9 +3,6 @@ import json
 import uuid
 from pathlib import Path
 
-os.environ["HTTP_PROXY"] = "http://14a0fa8168773:efed560f55@212.69.10.161:12323"
-os.environ["HTTPS_PROXY"] = "http://14a0fa8168773:efed560f55@212.69.10.161:12323"
-
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,9 +13,17 @@ from database import init_db, save_chat_message, get_chat_history, create_or_upd
 from rag import add_document_to_rag
 from tools import set_current_thread_id
 
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*")
+
 app = FastAPI(title="AxioGPT")
 
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS.split(",") if ALLOWED_ORIGINS != "*" else ["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 Path("uploads").mkdir(exist_ok=True)
 init_db()
@@ -65,6 +70,11 @@ def extract(chunk) -> str:
 @app.get("/")
 async def root():
     return {"status": "ok", "app": "AxioGPT"}
+
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy", "app": "AxioGPT"}
 
 
 @app.get("/models")

@@ -199,7 +199,10 @@ export default function MessageBubble({ message }) {
               </svg>
               Copy
             </button>
-            <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors text-[12px]">
+            <button
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors text-[12px]"
+              title="Good response"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-3.5 h-3.5"
@@ -215,7 +218,10 @@ export default function MessageBubble({ message }) {
                 />
               </svg>
             </button>
-            <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors text-[12px]">
+            <button
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors text-[12px]"
+              title="Bad response"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-3.5 h-3.5"

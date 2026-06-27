@@ -4,3 +4,9 @@ __pycache__/
 backend/.env
 node_modules/
 dist/
+DOCS.md
+docs.html
+backend/uploads/
+frontend/.vite/
+generated_images/
+images/

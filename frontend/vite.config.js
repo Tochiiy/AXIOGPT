@@ -6,11 +6,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      "/models": "http://localhost:9999",
-      "/conversations": "http://localhost:9999",
-      "/history": "http://localhost:9999",
-      "/upload": "http://localhost:9999",
-      "/chat": "http://localhost:9999",
+      "/models": "http://localhost:8000",
+      "/conversations": "http://localhost:8000",
+      "/history": "http://localhost:8000",
+      "/upload": "http://localhost:8000",
+      "/chat": "http://localhost:8000",
     },
   },
 });

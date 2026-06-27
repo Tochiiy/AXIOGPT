@@ -2,7 +2,6 @@ fastapi
 uvicorn
 python-multipart
 python-dotenv
-certifi
 
 langchain-core
 langgraph

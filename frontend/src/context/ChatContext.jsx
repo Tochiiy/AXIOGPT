@@ -199,7 +199,7 @@ export function ChatProvider({ children }) {
       try {
         dispatch({ type: "SET_CONVERSATIONS_LOADING", value: true });
         const data = await getConversations();
-        const list = Array.isArray(data) ? data : (data.conversations ?? []);
+        const list = data.conversations ?? [];
         dispatch({ type: "SET_CONVERSATIONS", conversations: list });
       } catch (err) {
         console.error("Failed to load conversations:", err);
@@ -217,7 +217,7 @@ export function ChatProvider({ children }) {
       try {
         dispatch({ type: "SET_HISTORY_LOADING", value: true });
         const data = await getHistory(threadId);
-        const messages = Array.isArray(data) ? data : (data.messages ?? []);
+        const messages = data.messages ?? [];
         const normalised = messages.map((m, i) => ({
           id: m.id ?? `hist-${i}`,
           role: m.role,
@@ -253,7 +253,6 @@ export function ChatProvider({ children }) {
           message: content,
           threadId: state.activeThreadId,
           model: state.activeModel,
-          docId: state.pendingDocId,
         });
 
         const reader = res.body.getReader();
