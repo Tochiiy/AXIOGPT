@@ -91,7 +91,7 @@ def add_document_to_rag(file_path: str, thread_id: str):
             },
         })
 
-    index.upsert(vectors)
+    index.upsert(vectors=vectors)
     return {"filename": filename, "chunks": len(chunks)}
 
 
