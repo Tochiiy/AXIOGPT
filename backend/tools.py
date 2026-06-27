@@ -151,7 +151,8 @@ def generate_image(prompt: str) -> str:
         )
         with open(path, "wb") as f:
             f.write(resp.content)
-        return f"Image saved to {path}"
+        base = os.getenv("PUBLIC_URL", "http://localhost:8000")
+        return f"Image generated! View or download: {base}/images/{filename}"
     except Exception as e:
         return f"Image generation failed: {e}"
 
