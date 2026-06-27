@@ -1,6 +1,7 @@
 import os
 import re
 import pathlib
+from datetime import datetime, timezone
 import requests
 import numexpr
 import wikipediaapi
@@ -47,6 +48,13 @@ def calculate(expression: str) -> str:
         return str(result)
     except Exception as e:
         return f"Calculation error: {e}"
+
+
+@tool
+def get_current_time() -> str:
+    """Get the current date and time in a readable format."""
+    now = datetime.now(timezone.utc)
+    return now.strftime("%A, %B %d, %Y at %I:%M:%S %p UTC")
 
 
 @tool
@@ -297,6 +305,7 @@ def search_uploaded_documents(query: str, thread_id: str = "") -> str:
 tools = [
     search_web,
     calculate,
+    get_current_time,
     get_stock_price,
     get_weather,
     get_location,
