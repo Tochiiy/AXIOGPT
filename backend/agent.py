@@ -75,18 +75,17 @@ def get_agent(model: str | None = None):
     if model in _AGENT_CACHE:
         return _AGENT_CACHE[model]
 
-    kwargs = dict(model=model, temperature=0.3, streaming=True)
     provider = MODEL_PROVIDER_MAP.get(model)
     if provider == "groq":
-        llm = ChatGroq(**kwargs)
+        llm = ChatGroq(model=model, temperature=0.3)
     elif provider == "cerebras":
-        llm = ChatCerebras(**kwargs)
+        llm = ChatCerebras(model=model, temperature=0.3)
     elif provider == "openrouter":
-        llm = ChatOpenRouter(**kwargs)
+        llm = ChatOpenRouter(model=model, temperature=0.3)
     elif provider == "nvidia":
-        llm = ChatNVIDIA(**kwargs)
+        llm = ChatNVIDIA(model=model, temperature=0.3)
     else:
-        llm = ChatGoogleGenerativeAI(**kwargs)
+        llm = ChatGoogleGenerativeAI(model=model, temperature=0.3)
 
     llm_with_tools = llm.bind_tools(tools)
 
