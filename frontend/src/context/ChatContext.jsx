@@ -12,6 +12,23 @@ import {
   streamChat,
 } from "../api/client";
 
+function modelLabel(m) {
+  if (m?.includes("gemini-2.5-flash")) return "Gemini 2.5 Flash";
+  if (m?.includes("llama-3.3-70b")) return "Llama 3.3 70B";
+  if (m?.includes("gpt-oss")) return "GPT OSS 120B";
+  if (m?.includes("openrouter/auto")) return "OpenRouter Auto";
+  if (m?.includes("nemotron")) return "Nemotron 120B";
+  return m || "Unknown";
+}
+
+function isQuotaError(msg) {
+  return /429|quota|rate.limit|RESOURCE_EXHAUSTED/i.test(msg || "");
+}
+
+function friendlyQuotaError(model) {
+  return `${modelLabel(model)} hit its rate limit. Try switching to a different model using the dropdown in the top bar.`;
+}
+
 const ChatContext = createContext(null);
 
 const initialState = {
@@ -297,10 +314,13 @@ export function ChatProvider({ children }) {
             try {
               const parsed = JSON.parse(data);
               if (parsed?.error) {
+                const errMsg = isQuotaError(parsed.error)
+                  ? friendlyQuotaError(state.activeModel)
+                  : parsed.error;
                 dispatch({
                   type: "STREAM_ERROR",
                   id: asstMsgId,
-                  message: parsed.error,
+                  message: errMsg,
                 });
                 break;
               }
@@ -332,10 +352,13 @@ export function ChatProvider({ children }) {
         }
       } catch (err) {
         console.error("Stream error:", err);
+        const errMsg = isQuotaError(err.message)
+          ? friendlyQuotaError(state.activeModel)
+          : "Something went wrong. Please try again.";
         dispatch({
           type: "STREAM_ERROR",
           id: asstMsgId,
-          message: "Something went wrong. Please try again.",
+          message: errMsg,
         });
       }
     },
