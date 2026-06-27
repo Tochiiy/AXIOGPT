@@ -1,4 +1,4 @@
-import os
+import os, io
 from typing import Optional
 from datetime import datetime, timezone
 
@@ -6,22 +6,26 @@ from dotenv import load_dotenv
 load_dotenv()
 from pymongo import MongoClient
 from pymongo.database import Database
+from bson import ObjectId
+from gridfs import GridFS, GridFSBucket
 from langgraph.checkpoint.mongodb import MongoDBSaver
 
 
 client: Optional[MongoClient] = None
 db: Optional[Database] = None
+fs: Optional[GridFSBucket] = None
 checkpointer = None
 
 
 def init_db():
-    global client, db, checkpointer
+    global client, db, fs, checkpointer
     uri = os.getenv("MONGO_DB_URI")
     if not uri:
         print("WARNING: MONGO_DB_URI not set. Starting without database persistence.")
         return
     client = MongoClient(uri)
     db = client.get_database("axiogpt")
+    fs = GridFSBucket(db)
     checkpointer = MongoDBSaver(client)
 
     db["conversations"].create_index("thread_id", unique=True)
@@ -120,3 +124,24 @@ def search_memory(thread_id: str, query: str):
         return "No saved memory found."
 
     return "\n".join([f"- {m['memory']}" for m in memories])
+
+
+def save_file_to_gridfs(filename: str, data: bytes, content_type: str = "") -> str:
+    if fs is None:
+        return ""
+    file_id = fs.upload_from_stream(
+        filename,
+        io.BytesIO(data),
+        metadata={"content_type": content_type},
+    )
+    return str(file_id)
+
+
+def get_file_from_gridfs(file_id: str) -> tuple[bytes, str] | None:
+    if fs is None:
+        return None
+    try:
+        grid_out = fs.open_download_stream(ObjectId(file_id))
+        return grid_out.read(), grid_out.filename
+    except Exception:
+        return None

@@ -26,3 +26,4 @@ PyMuPDF
 wikipedia-api
 youtube-transcript-api
 trafilatura
+slowapi
