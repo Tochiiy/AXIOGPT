@@ -23,11 +23,25 @@ function CopyButton({ text }) {
 function ActionButtons({ content }) {
   const [copied, setCopied] = useState(false);
   const [feedback, setFeedback] = useState(null);
+  const [speaking, setSpeaking] = useState(false);
 
   const doCopy = () => {
     navigator.clipboard.writeText(content);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const toggleSpeech = () => {
+    if (speaking) {
+      window.speechSynthesis.cancel();
+      setSpeaking(false);
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(content);
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => setSpeaking(false);
+    window.speechSynthesis.speak(utterance);
+    setSpeaking(true);
   };
 
   return (
@@ -46,6 +60,25 @@ function ActionButtons({ content }) {
           </svg>
         )}
         {copied ? "Copied" : "Copy"}
+      </button>
+      <button
+        onClick={toggleSpeech}
+        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-colors text-[12px] ${
+          speaking
+            ? "text-[#c96442] bg-white/5"
+            : "text-white/30 hover:text-white/60 hover:bg-white/5"
+        }`}
+        title={speaking ? "Stop" : "Read aloud"}
+      >
+        {speaking ? (
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          </svg>
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+          </svg>
+        )}
       </button>
       <button
         onClick={() => setFeedback(feedback === "like" ? null : "like")}
