@@ -99,7 +99,7 @@ export default function EmptyState() {
     <div className="flex-1 flex flex-col items-center justify-center px-6 pb-10">
       {/* logo */}
       <div className="w-12 h-12 rounded-2xl bg-[#c96442] flex items-center justify-center mb-5">
-        <p>Axio</p>
+        Axio
       </div>
 
       <h1 className="text-2xl font-semibold text-white mb-2 tracking-tight">
