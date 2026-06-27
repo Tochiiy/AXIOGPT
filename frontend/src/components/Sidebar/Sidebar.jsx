@@ -185,7 +185,7 @@ export default function Sidebar({ open, onClose }) {
 
         {/* footer */}
         <div className="border-t border-white/[0.07] px-3 py-3">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 mb-2">
             <div className="w-7 h-7 rounded-full bg-[#c96442] flex items-center justify-center text-white text-xs font-semibold shrink-0">
               A
             </div>
@@ -198,6 +198,13 @@ export default function Sidebar({ open, onClose }) {
               </p>
             </div>
           </div>
+          <a href="mailto:Tochukwusun24@gmail.com"
+            className="flex items-center gap-1.5 text-[11px] text-white/25 hover:text-white/50 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            Report issue
+          </a>
         </div>
       </aside>
     </>
