@@ -140,22 +140,17 @@ if os.getenv("GEMINI_API_KEY"):
 
 @tool
 def generate_image(prompt: str) -> str:
-    """Generate an image from a text description using Imagen."""
-    if not genai_client:
-        return "Image generation not available (GEMINI_API_KEY missing)."
+    """Generate an image from a text description using Pollinations.ai."""
     try:
-        from google.genai.types import GenerateImagesConfig
-        result = genai_client.models.generate_images(
-            model="imagen-3.0-generate-001",
-            prompt=prompt,
-            config=GenerateImagesConfig(number_of_images=1),
-        )
-        image = result.generated_images[0]
         filename = prompt[:30].strip().replace(" ", "_") + ".png"
         path = f"generated_images/{filename}"
         os.makedirs("generated_images", exist_ok=True)
+        resp = requests.get(
+            "https://image.pollinations.ai/prompt/" + requests.utils.quote(prompt),
+            timeout=30,
+        )
         with open(path, "wb") as f:
-            f.write(image.image.image_bytes)
+            f.write(resp.content)
         return f"Image saved to {path}"
     except Exception as e:
         return f"Image generation failed: {e}"
