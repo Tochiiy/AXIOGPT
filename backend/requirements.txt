@@ -1,7 +1,8 @@
 fastapi
-uvicorn[standard]
+uvicorn
 python-multipart
 python-dotenv
+certifi
 
 langchain-core
 langgraph
@@ -9,17 +10,18 @@ langchain-groq
 langchain-google-genai
 langchain-cerebras
 langchain-openrouter
+langchain-nvidia-ai-endpoints
 
 langgraph-checkpoint-mongodb
-langgraph-checkpoint-sqlite
+pymongo
 
-langchain-chroma
-langchain-tavily
+pinecone
 tavily-python
-
-langchain-pinecone
 
 pypdf
 docx2txt
+yfinance
 
-sqlalchemy
+wikipedia-api
+youtube-transcript-api
+trafilatura
