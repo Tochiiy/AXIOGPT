@@ -77,10 +77,16 @@ The Vite dev server proxies `/models`, `/conversations`, `/history`, `/upload`, 
 
 ## Deployment
 
-### Backend → Render via Docker
-
+### Backend → Render
+- **URL:** https://axiogpt-backend.onrender.com
+- Runtime: Docker, root dir: `backend`, auto-deploys from `main`
 
 ### Frontend → Vercel
+- **URL:** https://axioai.vercel.app
+- Root dir: `frontend`, env: `VITE_API_URL=https://axiogpt-backend.onrender.com`
+
+### Isolation
+Conversations are scoped per browser via a UUID in localStorage — no login required, but users can't see each other's chats.
 
 ## API
 
@@ -91,7 +97,7 @@ Everything is at `backend/app.py`.
 | `/` | GET | Health check |
 | `/health` | GET | Health check (for Render) |
 | `/models` | GET | List available models |
-| `/conversations` | GET | List all conversations |
+| `/conversations` | GET | List conversations (scoped to user via X-User-Id) |
 | `/history/{thread_id}` | GET | Get messages for a thread |
 | `/upload` | POST | Upload a file (PDF, DOCX, TXT, etc.) |
 | `/chat/stream` | POST | Stream a chat response (SSE) |
