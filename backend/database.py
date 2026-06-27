@@ -25,11 +25,13 @@ def init_db():
     checkpointer = MongoDBSaver(client)
 
     db["conversations"].create_index("thread_id", unique=True)
+    db["conversations"].create_index("user_id")
     db["chat_messages"].create_index("thread_id")
+    db["chat_messages"].create_index("user_id")
     db["long_term_memory"].create_index("thread_id")
 
 
-def create_or_update_conversation(thread_id: str, first_message: str | None = None):
+def create_or_update_conversation(thread_id: str, user_id: str, first_message: str | None = None):
     if db is None:
         return
     conversation = db["conversations"].find_one({"thread_id": thread_id})
@@ -43,6 +45,7 @@ def create_or_update_conversation(thread_id: str, first_message: str | None = No
 
         db["conversations"].insert_one({
             "thread_id": thread_id,
+            "user_id": user_id,
             "title": title,
             "created_at": datetime.now(timezone.utc),
             "updated_at": datetime.now(timezone.utc),
@@ -54,21 +57,22 @@ def create_or_update_conversation(thread_id: str, first_message: str | None = No
         )
 
 
-def list_conversations():
+def list_conversations(user_id: str):
     if db is None:
         return []
     return list(
         db["conversations"]
-        .find()
+        .find({"user_id": user_id})
         .sort("updated_at", -1)
     )
 
 
-def save_chat_message(thread_id: str, role: str, content: str):
+def save_chat_message(thread_id: str, user_id: str, role: str, content: str):
     if db is None:
         return
     db["chat_messages"].insert_one({
         "thread_id": thread_id,
+        "user_id": user_id,
         "role": role,
         "content": content,
         "created_at": datetime.now(timezone.utc),

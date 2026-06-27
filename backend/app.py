@@ -3,7 +3,7 @@ import json
 import uuid
 from pathlib import Path
 
-from fastapi import FastAPI, UploadFile, File, Form
+from fastapi import FastAPI, UploadFile, File, Form, Header
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_core.messages import HumanMessage, AIMessage, AIMessageChunk, ToolMessage
@@ -83,8 +83,8 @@ async def models():
 
 
 @app.get("/conversations")
-async def conversations():
-    items = list_conversations()
+async def conversations(x_user_id: str = Header("")):
+    items = list_conversations(x_user_id) if x_user_id else []
     return {
         "conversations": [
             {
@@ -121,7 +121,7 @@ async def upload(file: UploadFile = File(...), thread_id: str = Form("default"))
 
 
 @app.post("/chat/stream")
-async def chat_stream(body: dict):
+async def chat_stream(body: dict, x_user_id: str = Header("")):
     try:
         msg = body.get("message", "").strip()
         tid = body.get("thread_id") or str(uuid.uuid4())
@@ -131,8 +131,8 @@ async def chat_stream(body: dict):
             return JSONResponse({"error": "Message is required."}, status_code=400)
 
         agent = get_agent(model)
-        create_or_update_conversation(tid, msg)
-        save_chat_message(tid, "user", msg)
+        create_or_update_conversation(tid, x_user_id, msg)
+        save_chat_message(tid, x_user_id, "user", msg)
         set_current_thread_id(tid)
         config = {"configurable": {"thread_id": tid}}
 
@@ -159,7 +159,7 @@ async def chat_stream(body: dict):
                         reply += token
                         yield sse({"token": token})
                 if reply.strip():
-                    save_chat_message(tid, "assistant", reply)
+                    save_chat_message(tid, x_user_id, "assistant", reply)
                 yield sse({"done": True})
             except Exception as e:
                 yield sse({"error": str(e)})

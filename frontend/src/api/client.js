@@ -1,11 +1,20 @@
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
+function getUserId() {
+  let id = localStorage.getItem("axio_user_id");
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem("axio_user_id", id);
+  }
+  return id;
+}
+
 async function request(path, options = {}) {
   const { headers: extraHeaders, body, ...rest } = options;
   const isFormData = body instanceof FormData;
   const headers = isFormData
-    ? { ...extraHeaders }
-    : { "Content-Type": "application/json", ...extraHeaders };
+    ? { "X-User-Id": getUserId(), ...extraHeaders }
+    : { "Content-Type": "application/json", "X-User-Id": getUserId(), ...extraHeaders };
 
   const res = await fetch(`${BASE_URL}${path}`, { headers, body, ...rest });
 
