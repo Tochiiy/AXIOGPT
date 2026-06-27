@@ -241,6 +241,20 @@ export default function MessageBubble({ message }) {
                     {children}
                   </a>
                 ),
+                img: ({ src, alt }) => (
+                  <span className="block my-3">
+                    <img src={src} alt={alt || ""} className="max-w-full rounded-lg border border-white/10" loading="lazy" />
+                    {src && (
+                      <a href={src} target="_blank" rel="noopener noreferrer" download
+                        className="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1.5 rounded-lg text-[12px] text-[#c96442] hover:bg-white/5 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Download Image
+                      </a>
+                    )}
+                  </span>
+                ),
                 hr: () => <hr className="border-white/10 my-4" />,
                 table: ({ children }) => (
                   <div className="overflow-x-auto my-3">
