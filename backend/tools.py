@@ -140,19 +140,10 @@ if os.getenv("GEMINI_API_KEY"):
 
 @tool
 def generate_image(prompt: str) -> str:
-    """Generate an image from a text description using Pollinations.ai."""
+    """Generate an image from a text description using Pollinations.ai (free, no API key)."""
     try:
-        filename = prompt[:30].strip().replace(" ", "_") + ".png"
-        path = f"generated_images/{filename}"
-        os.makedirs("generated_images", exist_ok=True)
-        resp = requests.get(
-            "https://image.pollinations.ai/prompt/" + requests.utils.quote(prompt),
-            timeout=30,
-        )
-        with open(path, "wb") as f:
-            f.write(resp.content)
-        base = os.getenv("PUBLIC_URL", "http://localhost:8000")
-        return f"Image generated! View or download: {base}/images/{filename}"
+        url = "https://image.pollinations.ai/prompt/" + requests.utils.quote(prompt)
+        return f"Here is your image:\n\n![{prompt}]({url})"
     except Exception as e:
         return f"Image generation failed: {e}"
 

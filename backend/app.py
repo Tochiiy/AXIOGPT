@@ -6,7 +6,7 @@ from pathlib import Path
 from fastapi import FastAPI, UploadFile, File, Form, Header
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+
 from langchain_core.messages import HumanMessage, AIMessage, AIMessageChunk, ToolMessage
 
 from agent import get_agent, ALLOWED_MODELS, DEFAULT_MODEL
@@ -27,10 +27,6 @@ app.add_middleware(
 )
 
 Path("uploads").mkdir(exist_ok=True)
-Path("generated_images").mkdir(exist_ok=True)
-
-app.mount("/images", StaticFiles(directory="generated_images"), name="images")
-
 init_db()
 
 
