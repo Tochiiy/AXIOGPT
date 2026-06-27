@@ -10,7 +10,7 @@ Agentic AI assistant with web search, RAG over uploaded documents, memory, and m
 
 **LangGraph agent loop** — the model can decide to call tools, get results, and continue the conversation. It's not a chatbot, it's an agent.
 
-The agent has 17 tools available: web search, Wikipedia, YouTube transcripts, image generation (Imagen), stock prices, weather, file operations, RAG search, and memory. It decides when to use them based on the conversation.
+The agent has 19 tools available: web search, Wikipedia, YouTube transcripts, image generation (Pollinations.ai), stock prices, weather, current time, file operations, RAG search, and memory. It decides when to use them based on the conversation.
 
 ## Models
 
@@ -139,7 +139,7 @@ data: {"done":true}
 ├── backend/
 │   ├── app.py           # FastAPI server, SSE streaming, routes
 │   ├── agent.py         # LangGraph agent definition, model config, graph compilation
-│   ├── tools.py         # 17 tool definitions (web search, calc, RAG, memory, etc.)
+│   ├── tools.py         # 19 tool definitions (web search, calc, RAG, memory, etc.)
 │   ├── database.py      # MongoDB CRUD for conversations, messages, long-term memory
 │   ├── rag.py           # Pinecone vector search with Gemini embeddings
 │   ├── requirements.txt
