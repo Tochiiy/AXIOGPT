@@ -1,5 +1,5 @@
 # AxioGPT
-
+# LIVE URL AVAILABLE ON: https://axioai.vercel.app
 Agentic AI assistant with web search, RAG over uploaded documents, memory, and multi-model support. Built on LangGraph, FastAPI, and React. Think of it as a customizable ChatGPT clone — but with tools and a real agent loop.
 
 ## Architecture overview
@@ -14,7 +14,7 @@ The agent has 17 tools available: web search, Wikipedia, YouTube transcripts, im
 
 ## Models
 
-| Name | Provider |
+| Name | Provider | Why this one |
 |------|----------|-------------|
 | Llama 3.3 70B | Groq | Fast inference, generous free tier. Good default for most uses. |
 | GPT OSS 120B | Cerebras | Surprisingly good for a small provider. Fast. |

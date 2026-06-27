@@ -20,6 +20,8 @@ tavily-python
 pypdf
 docx2txt
 yfinance
+numexpr
+PyMuPDF
 
 wikipedia-api
 youtube-transcript-api
