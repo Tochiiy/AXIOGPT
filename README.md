@@ -88,6 +88,9 @@ The Vite dev server proxies `/models`, `/conversations`, `/history`, `/upload`, 
 ### Isolation
 Conversations are scoped per browser via a UUID in localStorage — no login required, but users can't see each other's chats.
 
+### Persistence
+Uploaded files are stored in MongoDB (GridFS).
+
 ## API
 
 Everything is at `backend/app.py`.
@@ -99,8 +102,9 @@ Everything is at `backend/app.py`.
 | `/models` | GET | List available models |
 | `/conversations` | GET | List conversations (scoped to user via X-User-Id) |
 | `/history/{thread_id}` | GET | Get messages for a thread |
-| `/upload` | POST | Upload a file (PDF, DOCX, TXT, etc.) |
-| `/chat/stream` | POST | Stream a chat response (SSE) |
+| `/upload` | POST | Upload a file (PDF, DOCX, TXT, etc.) — 20/min |
+| `/files/{file_id}` | GET | Download an uploaded file |
+| `/chat/stream` | POST | Stream a chat response (SSE) — 30/min |
 
 ### `/chat/stream` request
 

@@ -114,7 +114,7 @@ async def history(thread_id: str):
 
 @app.post("/upload")
 @limiter.limit("20/minute")
-async def upload(request, file: UploadFile = File(...), thread_id: str = Form("default")):
+async def upload(request: Request, file: UploadFile = File(...), thread_id: str = Form("default")):
     ext = Path(file.filename or "").suffix.lower()
     if ext not in {".pdf", ".docx", ".txt", ".md", ".py", ".csv"}:
         return JSONResponse({"success": False, "message": "Unsupported file type."}, status_code=400)
@@ -143,7 +143,7 @@ async def download_file(file_id: str):
 
 @app.post("/chat/stream")
 @limiter.limit("30/minute")
-async def chat_stream(request, body: dict, x_user_id: str = Header("")):
+async def chat_stream(request: Request, body: dict, x_user_id: str = Header("")):
     try:
         msg = body.get("message", "").strip()
         tid = body.get("thread_id") or str(uuid.uuid4())

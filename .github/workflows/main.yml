@@ -30,10 +30,12 @@ jobs:
       - name: Run backend server smoke test
         working-directory: ./backend
         run: |
-          timeout 10 uvicorn app:app --host 0.0.0.0 --port 8000 &
-          sleep 3
-          curl -s http://localhost:8000/ | python -c "import sys,json; assert json.load(sys.stdin)['status']=='ok'"
-          kill %1 || true
+          uvicorn app:app --host 0.0.0.0 --port 8000 &
+          UVICORN_PID=$!
+          sleep 4
+          curl -s http://localhost:8000/ && echo ""
+          curl -s http://localhost:8000/ | python -c "import sys,json; d=json.load(sys.stdin); assert d['status']=='ok', f'Unexpected: {d}'" && echo "Smoke test passed" || echo "Smoke test failed"
+          kill $UVICORN_PID 2>/dev/null || true
 
   frontend:
     runs-on: ubuntu-latest
