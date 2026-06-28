@@ -27,7 +27,7 @@ The agent has 19 tools available: web search, Wikipedia, YouTube transcripts, im
 - **Pinecone or pgvector**: Pinecone is fine, but for a self-hosted setup I'd use pgvector with Supabase. 
 - **MongoDB checkpointer**: LangGraph's `MongoDBSaver` works but adds latency on every streaming step. For production at scale, I'd look at the Postgres checkpointer.
 - **SSE vs WebSockets**: SSE is simpler and works through most proxies. But if you need bidirectional communication (like mid-stream cancellation from the client), WebSockets are cleaner.
-- **File uploads to S3**: Currently saves to local disk. Fine for Render + single instance, but for scale beyond one server, uploaded files will br moved to aws or cloudinary.
+- **File uploads to S3**: Currently saves to local disk. Fine for Render + single instance, but for scale beyond one server, uploaded files will be moved to AWS or Cloudinary.
 
 ## Local development
 
