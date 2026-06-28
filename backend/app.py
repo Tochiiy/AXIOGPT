@@ -5,6 +5,8 @@ import uuid
 import tempfile
 from pathlib import Path
 
+import sentry_sdk
+from sentry_sdk.integrations.fastapi import FastApiIntegration
 from fastapi import FastAPI, UploadFile, File, Form, Header, Request
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,6 +20,15 @@ from agent import get_agent, ALLOWED_MODELS, DEFAULT_MODEL
 from database import init_db, save_chat_message, get_chat_history, create_or_update_conversation, list_conversations, save_file_to_gridfs, get_file_from_gridfs
 from rag import add_document_to_rag
 from tools import set_current_thread_id
+
+sentry_sdk.init(
+    dsn=os.getenv("SENTRY_DSN", ""),
+    send_default_pii=True,
+    enable_logs=True,
+    traces_sample_rate=1.0,
+    profile_session_sample_rate=1.0,
+    profile_lifecycle="trace",
+)
 
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*")
 
@@ -83,6 +94,11 @@ async def root():
 @app.get("/health")
 async def health():
     return {"status": "healthy", "app": "AxioGPT"}
+
+@app.get("/sentry-debug")
+async def sentry_debug():
+    division_by_zero = 1 / 0
+    return {"message": "unreachable"}
 
 
 @app.get("/models")

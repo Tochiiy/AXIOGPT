@@ -26,4 +26,5 @@ PyMuPDF
 wikipedia-api
 youtube-transcript-api
 trafilatura
+sentry-sdk[fastapi]
 slowapi

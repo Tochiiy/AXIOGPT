@@ -53,6 +53,7 @@ TAVILY_API_KEY=
 PINECONE_API_KEY=
 MONGO_DB_URI=
 OPENWEATHER_API_KEY=
+SENTRY_DSN=
 DEFAULT_MODEL=models/gemini-2.5-flash
 ALLOWED_ORIGINS=http://localhost:5173
 ```
@@ -72,6 +73,7 @@ npm run dev
 ```
 
 Set `VITE_API_URL=http://localhost:8000` if needed (defaults to localhost:8000).
+Set `VITE_SENTRY_DSN` for frontend error tracking.
 
 The Vite dev server proxies `/models`, `/conversations`, `/history`, `/upload`, `/chat` to the backend. So you can just open `http://localhost:5173` and it works.
 
@@ -80,10 +82,20 @@ The Vite dev server proxies `/models`, `/conversations`, `/history`, `/upload`, 
 ### Backend → Render
 - **URL:** https://axiogpt-backend.onrender.com
 - Runtime: Docker, root dir: `backend`, auto-deploys from `main`
+- Env: `SENTRY_DSN=...`
 
 ### Frontend → Vercel
 - **URL:** https://axioai.vercel.app
-- Root dir: `frontend`, env: `VITE_API_URL=https://axiogpt-backend.onrender.com`
+- Root dir: `frontend`, env: `VITE_API_URL=https://axiogpt-backend.onrender.com`, `VITE_SENTRY_DSN=...`
+
+### Monitoring
+
+| Service | What it tracks | Where to view |
+|---------|---------------|---------------|
+| **Sentry** | Backend & frontend errors, performance traces | https://sentry.io |
+| **Google Analytics** | Page views, traffic, user behavior | https://analytics.google.com |
+
+Both are free tier. Sentry catches unhandled exceptions + slow transactions. GA tracks who visits and what they do.
 
 ### Isolation
 Conversations are scoped per browser via a UUID in localStorage — no login required, but users can't see each other's chats.
@@ -99,6 +111,7 @@ Everything is at `backend/app.py`.
 |----------|--------|-------------|
 | `/` | GET | Health check |
 | `/health` | GET | Health check (for Render) |
+| `/sentry-debug` | GET | Triggers a test error for Sentry verification |
 | `/models` | GET | List available models |
 | `/conversations` | GET | List conversations (scoped to user via X-User-Id) |
 | `/history/{thread_id}` | GET | Get messages for a thread |
